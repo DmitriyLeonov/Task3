@@ -35,4 +35,20 @@ namespace Task3.Models
             return new ApplicationDbContext();
         }
     }
+
+    public class RoleInitializer : CreateDatabaseIfNotExists<ApplicationDbContext>
+    {
+        protected override void Seed(ApplicationDbContext context)
+        {
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
+            var userRole = new IdentityRole { Name = "User" };
+            var deletedRole = new IdentityRole { Name = "Deleted" };
+            var blockedRole = new IdentityRole { Name = "Blocked" };
+
+            roleManager.Create(userRole);
+            roleManager.Create(deletedRole);
+            roleManager.Create(blockedRole);
+            base.Seed(context);
+        }
+    }
 }

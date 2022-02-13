@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Task3.Models;
 
 namespace Task3
 {
@@ -12,6 +14,7 @@ namespace Task3
     {
         protected void Application_Start()
         {
+            Database.SetInitializer<ApplicationDbContext>(new RoleInitializer());
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
