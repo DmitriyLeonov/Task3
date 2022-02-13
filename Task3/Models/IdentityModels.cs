@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -10,8 +11,13 @@ namespace Task3.Models
     // В профиль пользователя можно добавить дополнительные данные, если указать больше свойств для класса ApplicationUser. Подробности см. на странице https://go.microsoft.com/fwlink/?LinkID=317594.
     public class ApplicationUser : IdentityUser
     {
+        [Display(Name = "Registration date")]
+
         public DateTime RegistrationDate { get; set; }
+        [Display(Name = "Last Login")]
+
         public DateTime LastLogIn { get; set; }
+        [Display(Name = "User Name")]
 
         public override string UserName { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)

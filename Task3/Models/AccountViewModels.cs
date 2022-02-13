@@ -87,7 +87,6 @@ namespace Task3.Models
         [Display(Name = "Подтверждение пароля")]
         [Compare("Password", ErrorMessage = "Пароль и его подтверждение не совпадают.")]
         public string ConfirmPassword { get; set; }
-
         public DateTime RegistrationDate { get; set; }
         public DateTime LastLogIn { get; set; }
     }
