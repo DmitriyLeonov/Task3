@@ -3,8 +3,10 @@ using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Task3.Attributes;
 using Task3.Models;
 
 namespace Task3.Controllers
@@ -15,34 +17,56 @@ namespace Task3.Controllers
         {
             return View();
         }
+        //public ActionResult Delete() => View();
 
-        public ActionResult About()
+        [HttpPost]
+        //[MultipleButton(Name = "action", Argument = "Delete")]
+        public async Task<ActionResult> DeleteAsync(string[] selectedUsers) 
         {
-            ViewBag.Message = "Your application description page.";
-
+            ApplicationUserManager userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            for (int i = 0; i < selectedUsers.Length; i+=2)
+            {
+                if (selectedUsers[i] == "User" || selectedUsers[i] == "Deleted" || selectedUsers[i] == "Blocked") { }
+                else { 
+                    i++;
+                }
+                if (selectedUsers.Length - 2 < i)
+                {
+                    break;
+                }
+                await userManager.RemoveFromRoleAsync(selectedUsers[i + 1], selectedUsers[i]);
+                await userManager.AddToRoleAsync(selectedUsers[i + 1], "Deleted");
+            }
             return View();
         }
 
-        public ActionResult Contact()
+        [HttpPost]
+        //[MultipleButton(Name = "action", Argument = "Block")]
+        public async Task<ActionResult> BlockAsync(string[] selectedUsers) 
         {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            ApplicationUserManager userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            for (int i = 0; i < selectedUsers.Length; i += 2)
+            {
+                if (selectedUsers[i] == "User" || selectedUsers[i] == "Deleted" || selectedUsers[i] == "Blocked") { }
+                else
+                {
+                    i++;
+                }
+                if (selectedUsers.Length - 2 < i)
+                {
+                    break;
+                }
+                await userManager.RemoveFromRoleAsync(selectedUsers[i + 1], selectedUsers[i]);
+                await userManager.AddToRoleAsync(selectedUsers[i + 1], "Blocked");
+            }
+            return View(AccountController.);
         }
 
         public ActionResult Users()
         {
             ApplicationDbContext context = new ApplicationDbContext();
 
-            //IdentityRole identityRole = new IdentityRole();
-            //ApplicationUserManager userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            //IList<UserViewModel> users = new List<UserViewModel>();
-            //IList<ApplicationUser> allUsers = context.Users.ToList();
-            //foreach (ApplicationUser user in allUsers)
-            //{
-
-            //    users.Add(new UserViewModel { User = user, Role = role });
-            //}
+            
             var usersWithRoles = (from user in context.Users
                                   select new
                                   {
