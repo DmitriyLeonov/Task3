@@ -3,39 +3,46 @@
 @{
     ViewBag.Title = "Users";
 }
+@if (Request.IsAuthenticated)
+{
+    <h2>Users</h2>
 
-<h2>Users</h2>
+    <form method="post">
+        <div class="nl">
+            <input type="submit" value="Delete" formaction="@Url.Action("DeleteAsync")" formmethod="post" class="btn" />
+            <input type="submit" value="Block" formaction="@Url.Action("BlockAsync")" formmethod="post" class="btn" />
+            <input type="submit" value="Unblock" formaction="@Url.Action("UnlockAsync")" formmethod="post" class="btn" />
+            <br />
+            <table class="table table-striped table-bordered ">
+                <tbody class="table-responsive ">
+                    <tr><th>@Html.CheckBox("CheckAll", false, new { id = "select_all" })</th><th>Id</th><th>Email</th><th>User Name</th><th>Date of registration</th><th>Last Login</th><th>Status</th></tr>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selectedUsers"
+                                       id="@user.UserId" value="@user.Role"
+                                       class="someClass">
+                                <input name="selectedUsers" type="hidden" id="@user.UserId" value="@user.UserId" class="someClass" />
+                            </td>
+                            <td>@user.UserId</td>
+                            <td>@user.Email</td>
+                            <td>@user.UserName</td>
+                            <td>@user.RegistrationDate</td>
+                            <td>@user.LastLogIn</td>
+                            <td>@user.Role</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </form>
+}
+else
+{
+    Response.Redirect("Index");
+}
 
-<form method="post" >
-    <div class="nl">
-        <input type="submit" value="Delete" name="action:Delete" />
-        <input type="submit" value="Block" name="action:Block" />
-        <table class="table table-striped table-bordered ">
-            <tbody class="table-responsive ">
-                <tr><th>@Html.CheckBox("CheckAll", false, new { id = "select_all" })</th><th>Id</th><th>Email</th><th>User Name</th><th>Date of registration</th><th>Last Login</th><th>Status</th></tr>
-                @foreach (var user in Model)
-                {
-                    <tr>
-                        <td>
-                            <input type="checkbox" name="selectedUsers"
-                                   id="@user.UserId" value="@user.Role"
-                                   class="someClass">
-                            <input name="selectedUsers" type="hidden" id="@user.UserId" value="@user.UserId" class="someClass"/>
-                        </td>
-                        <td>@user.UserId</td>
-                        <td>@user.Email</td>
-                        <td>@user.UserName</td>
-                        <td>@user.RegistrationDate</td>
-                        <td>@user.LastLogIn</td>
-                        <td>@user.Role</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-        <input type="submit" value="Delete" formaction="@Url.Action("DeleteAsync")" formmethod="post" class="btn"/>
-        <input type="submit" value="Block" name="action:Block" formaction="@Url.Action("BlockAsync")" formmethod="post" class="btn" />
-    </div>
-</form>
 <script>
     $('#select_all').click(function () {
         $('.someClass').prop('checked', this.checked)

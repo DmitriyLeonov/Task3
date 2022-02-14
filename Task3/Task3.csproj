@@ -251,6 +251,7 @@
     <Content Include="Views\Home\Users.cshtml" />
     <Content Include="Views\Home\DeleteAsync.cshtml" />
     <Content Include="Views\Home\BlockAsync.cshtml" />
+    <Content Include="Views\Home\UnlockAsync.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
