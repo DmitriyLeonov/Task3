@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,16 @@ namespace Task3.Controllers
         {
             return View();
         }
-        //public ActionResult Delete() => View();
+        public ActionResult Contact() => View();
 
         [HttpPost]
         [Authorize(Roles = "User")]
         public async Task<ActionResult> DeleteAsync(string[] selectedUsers) 
         {
+            string currentUser = User.Identity.GetUserId();
             int i = 0;
+            string method = "Users";
+            string controller = "Home";
             ApplicationUserManager userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var AuthenticationManager = HttpContext.GetOwinContext().Authentication;
             while (i < selectedUsers.Length)
@@ -31,8 +35,14 @@ namespace Task3.Controllers
                 if (selectedUsers[i] == "User" || selectedUsers[i] == "Blocked")
                 {
                     await userManager.RemoveFromRoleAsync(selectedUsers[i + 1], selectedUsers[i]);
-                    await userManager.AddToRoleAsync(selectedUsers[i + 1], "Blocked");
+                    await userManager.AddToRoleAsync(selectedUsers[i + 1], "Deleted");
                     await userManager.SetLockoutEndDateAsync(selectedUsers[i + 1], DateTimeOffset.MaxValue);
+                    if (selectedUsers[i + 1] == currentUser)
+                    {
+                        method = "Login";
+                        controller = "Account";
+                        HttpContext.GetOwinContext().Authentication.SignOut();
+                    }
                     i++;
                 }
                 else if (selectedUsers.Length - 2 < i)
@@ -43,25 +53,33 @@ namespace Task3.Controllers
                 {
                     i++;
                 }
-                AuthenticationManager.SignOut();
             }
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction(method, controller);
         }
 
         [HttpPost]
         [Authorize(Roles = "User")]
         public async Task<ActionResult> BlockAsync(string[] selectedUsers) 
         {
+            string currentUser = User.Identity.GetUserId();
+            string method = "Users";
+            string controller = "Home";
             int i = 0;
             ApplicationUserManager userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
                 while (i<selectedUsers.Length)
                 {
-                    if (selectedUsers[i] == "User" || selectedUsers[i] == "Deleted") {
+                    if (selectedUsers[i] == "User" || selectedUsers[i] == "Deleted" ) {
                         await userManager.RemoveFromRoleAsync(selectedUsers[i + 1], selectedUsers[i]);
                         await userManager.AddToRoleAsync(selectedUsers[i + 1], "Blocked");
                         await userManager.SetLockoutEndDateAsync(selectedUsers[i + 1], DateTimeOffset.MaxValue);
+                        if (selectedUsers[i + 1] == currentUser)
+                        {
+                            method = "Login";
+                            controller = "Account";
+                            HttpContext.GetOwinContext().Authentication.SignOut();
+                        }
                         i++;
-                    }
+                }
                     else if(selectedUsers.Length - 2 < i)
                     {
                         break;
@@ -71,14 +89,14 @@ namespace Task3.Controllers
                         i++;
                     }
                 }
-            return RedirectToAction("Index","Home");
+            return RedirectToAction(method, controller);
         }
 
         [HttpPost]
-        [Authorize(Roles = "User")]
         public async Task<ActionResult> UnlockAsync(string[] selectedUsers)
         {
             int i = 0;
+            
             ApplicationUserManager userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             while (i < selectedUsers.Length)
             {
@@ -86,7 +104,8 @@ namespace Task3.Controllers
                 {
                     await userManager.RemoveFromRoleAsync(selectedUsers[i + 1], selectedUsers[i]);
                     await userManager.AddToRoleAsync(selectedUsers[i + 1], "User");
-                    await userManager.SetLockoutEndDateAsync(selectedUsers[i + 1], DateTimeOffset.MaxValue);
+                    await userManager.SetLockoutEndDateAsync(selectedUsers[i + 1], DateTimeOffset.Now);
+                    
                     i++;
                 }
                 else if (selectedUsers.Length - 2 < i)
@@ -98,7 +117,7 @@ namespace Task3.Controllers
                     i++;
                 }
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Users", "Home");
         }
 
         public ActionResult Users()

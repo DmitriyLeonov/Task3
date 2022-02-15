@@ -9,11 +9,13 @@
 
     <form method="post">
         <div class="nl">
-            <input type="submit" value="Delete" formaction="@Url.Action("DeleteAsync")" formmethod="post" class="btn" />
-            <input type="submit" value="Block" formaction="@Url.Action("BlockAsync")" formmethod="post" class="btn" />
-            <input type="submit" value="Unblock" formaction="@Url.Action("UnlockAsync")" formmethod="post" class="btn" />
+            <div id="toolbar">
+                <button type="submit" formaction="@Url.Action("BlockAsync")" formmethod="post" class="btn"><img src="~/Content/icons/block.png" /></button>
+                <button type="submit" formaction="@Url.Action("UnlockAsync")" formmethod="post" class="btn"><img src="~/Content/icons/icons8-unlock-security-lock-with-permission-granted-to-access-24.png" /></button>
+                <button type="submit" formaction="@Url.Action("DeleteAsync")" formmethod="post" class="btn"><img src="~/Content/icons/icons8-delete-24.png" /></button>
+            </div>
             <br />
-            <table class="table table-striped table-bordered ">
+            <table class="table table-hover table-bordered ">
                 <tbody class="table-responsive ">
                     <tr><th>@Html.CheckBox("CheckAll", false, new { id = "select_all" })</th><th>Id</th><th>Email</th><th>User Name</th><th>Date of registration</th><th>Last Login</th><th>Status</th></tr>
                     @foreach (var user in Model)
@@ -40,7 +42,7 @@
 }
 else
 {
-    Response.Redirect("Index");
+    Response.Redirect("Contact");
 }
 
 <script>
