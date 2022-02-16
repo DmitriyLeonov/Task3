@@ -207,6 +207,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Properties\PublishProfiles\Task320220211154515 - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\Task320220214221252 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\Task320220215232849 - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
